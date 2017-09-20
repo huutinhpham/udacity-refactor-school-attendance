@@ -85,10 +85,9 @@ var controller = {
 }
 
 var tableView = {
+
 	init: function() {
-		this.thead = $("thead");
-		this.tbody = $("tbody");
-		this.numSchoolDay = controller.getNumSchoolDays();
+		this.numSchoolDays = controller.getNumSchoolDays();
 		tableView.render();
 	},
 
@@ -96,6 +95,7 @@ var tableView = {
 		this.renderHeaderRow();
 
 		var numStudents = controller.getNumStudents();
+		//this.renderStudentRow(0);
 		for (var i = 0; i < numStudents; i++) {
 			this.renderStudentRow(i);
 		}
@@ -103,28 +103,56 @@ var tableView = {
 
 	renderHeaderRow: function() {
 		var headerRow = '<tr><th class="name-col">Student Name</th>'
-		for (var i = 0; i < this.numSchoolDay; i++) {
+		for (var i = 0; i < this.numSchoolDays; i++) {
 			headerRow += '<th>' + (i + 1) + '</th>';
 		}
 		headerRow += '<th class="missed-col">Days Missed-col</th></tr>';
-		this.thead.append(headerRow);
+		$("thead").append(headerRow);
 	},
 
 	renderStudentRow: function(index) {
+
 		var student = controller.getStudent(index);
-		var studentRow = '<tr class="student">';
 		var missedDays = controller.countMissing(index);
 
-		studentRow += '<td class="name-col">' + student.name + '</td>';
-		for (var i = 0; i < this.numSchoolDay; i++) {
-			student.attendance[i] ?
-				studentRow += '<td class="attend-col"><input type="checkbox" checked></td>' :
-				studentRow += '<td class="attend-col"><input type="checkbox"></td>';
-		}
+		//render student column
+		var studentRow = document.createElement('tr');
+		studentRow.className += "student";
 
-		studentRow += '<td class="missed-col">'+missedDays+'</td></tr>';
-		this.tbody.append(studentRow);	
+		//render name column
+		var studentName = document.createElement('td');
+		studentName.className += "name-col";
+		studentName.innerHTML = student.name;
 
+		studentRow.append(studentName);
+
+		//create checkbox columns
+		for (var i = 0; i < this.numSchoolDays; i++) {
+
+			var tdCheckBox = document.createElement('td');
+			tdCheckBox.className += "attend-col";
+
+			//create checkbox for day i
+			var inputCheckBox = document.createElement('input');
+			inputCheckBox.type = "checkbox";
+			
+			//set checkbox for day 1 if attendance is true
+			student.attendance[i] == true && inputCheckBox.prop('checked');
+
+			//bind checkbox click with changing the attendance function
+			inputCheckBox.click(function() {
+				controller.changeAttendance(index, i);
+			});
+
+			tdCheckBox.append(inputCheckBox);
+			studentRow.append(tdCheckBox);
+		};
+
+		var missedDay = document.createElement('td');
+		missedDay.className += "missed-col";
+		missedDay.innerHTML = missedDays;
+		studentRow.append(missedDay);
+		$('tbody').append(studentRow);
 	}
 }
 

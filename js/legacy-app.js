@@ -50,6 +50,8 @@ $(function() {
         });
     }
 
+    //view
+
     // Check boxes, based on attendace records
     $.each(attendance, function(name, days) {
         var studentRow = $('tbody .name-col:contains("' + name + '")').parent('tr'),
@@ -78,6 +80,7 @@ $(function() {
 
         countMissing();
         localStorage.attendance = JSON.stringify(newAttendance);
+        console.log(newAttendance);
     });
 
     countMissing();

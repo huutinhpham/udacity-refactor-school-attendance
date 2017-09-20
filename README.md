@@ -1,2 +1,2 @@
-udacity-frontend-attendance
+udacity-refactor-attendance-project
 ===========================

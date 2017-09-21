@@ -19,6 +19,6 @@ All functionalities and styles were kept as they were, the only difference is th
 
 ## Credits
 
-Legacy codes were prodived by Udacity's Full Stack Nanodegree.
+Legacy codes were prodived by Udacity's Full Stack Web Development Nanodegree.
 
-Refactored codes were written by me.
+ALL refactored codes were written by me.

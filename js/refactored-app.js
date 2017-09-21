@@ -22,22 +22,28 @@ var model = {
 		{
 			name: "Adam the Anaconda",
 			attendance: []
-		}
+		},
 	],
 
 	init: function() {
-		this.initAttendance();
 		if (!localStorage.students) {
+			this.initAttendance();
 			localStorage.students = JSON.stringify(this.students);
+		} else {
+			this.students =JSON.parse(localStorage.students);
 		}
 	},
 
 	initAttendance: function() {
 		for (var i = 0; i < this.students.length; i++) {
 			for (var j = 0; j < this.numSchoolDays; j++) {
-				this.students[i].attendance.push(false);
+				this.students[i].attendance.push(Math.random() >= 0.5);
 			}
 		}
+	},
+
+	updateStorage: function() {
+		localStorage.students = JSON.stringify(this.students);
 	}
 }
 
@@ -68,6 +74,7 @@ var controller = {
 		var change = !model.students[sIndex].attendance[aIndex];
 		model.students[sIndex].attendance[aIndex] = change;
 		tableView.updateMissedDayCol(sIndex);
+		model.updateStorage();
 	},
 
 	countMissing: function(index) {

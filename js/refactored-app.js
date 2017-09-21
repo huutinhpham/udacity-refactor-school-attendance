@@ -67,7 +67,7 @@ var controller = {
 	changeAttendance: function(sIndex, aIndex) {
 		var change = !model.students[sIndex].attendance[aIndex];
 		model.students[sIndex].attendance[aIndex] = change;
-		console.log(this.countMissing(sIndex));
+		tableView.updateMissedDayCol(sIndex);
 	},
 
 	countMissing: function(index) {
@@ -119,7 +119,6 @@ var tableView = {
 		var studentRow = document.createElement('tr');
 		studentRow.className += "student";
 
-		//render row components
 		this.renderStudentNameCol(studentRow, student.name);
 		this.renderCheckBoxCols(studentRow, student.attendance);
 		this.renderMissedDayCol(studentRow, index);
@@ -161,24 +160,28 @@ var tableView = {
 		studentRow.append(missedDayCol);
 	},
 
-	// reRenderMissedDayCol: function(index) {
-
-	// }
+	updateMissedDayCol: function(index) {
+		var missedDays = controller.countMissing(index);
+		$("tBody").children().slice(index, index + 1).children().slice(this.numSchoolDays + 1).html(missedDays);
+	},
 
 	bindCheckBoxes: function() {
+
 		var tBody = $("tbody");
+
 		for (var i = 0; i < this.numStudents; i++) {
 			var studentRow = tBody.children().slice(i, i + 1);
+
 			for (var j = 0; j < this.numSchoolDays; j++) {
 				var checkBoxCol = studentRow.children().slice(j + 1, j + 2);
 				checkBoxCol.click(function(sIndex, aIndex) {
 				return function() {
 						controller.changeAttendance(sIndex, aIndex);
 					}
-				}(i, j + 1));
+				}(i, j));
 			}
 		}
-	},
+	}
 }
 
 controller.init();

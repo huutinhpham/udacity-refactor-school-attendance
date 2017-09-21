@@ -9,13 +9,13 @@ All functionalities and styles were kept as they were, the only difference is th
 
 ## Languages
 
-	* **javaScript**
-	* **HTML**
+* **javaScript**
+* **HTML**
 
 ## Tools
 
-	* **jQuery**
-	* **MVC**
+* **jQuery**
+* **MVC**
 
 ## Credits
 

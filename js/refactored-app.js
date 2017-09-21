@@ -181,7 +181,7 @@ var tableView = {
 
 			for (var j = 0; j < this.numSchoolDays; j++) {
 				var checkBoxCol = studentRow.children().slice(j + 1, j + 2);
-				checkBoxCol.click(function(sIndex, aIndex) {
+				checkBoxCol.change(function(sIndex, aIndex) {
 				return function() {
 						controller.changeAttendance(sIndex, aIndex);
 					}

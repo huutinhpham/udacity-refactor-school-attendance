@@ -65,8 +65,9 @@ var controller = {
 	},
 
 	changeAttendance: function(sIndex, aIndex) {
-		model.student[sIndex].attendance[aIndex] = !model.student[sIndex].attendance[aIndex];
-		tableView.renderStudentRow(sIndex);
+		var change = !model.students[sIndex].attendance[aIndex];
+		model.students[sIndex].attendance[aIndex] = change;
+		console.log(this.countMissing(sIndex));
 	},
 
 	countMissing: function(index) {
@@ -79,7 +80,6 @@ var controller = {
 				missedDays += 1;
 			}
 		}
-
 		return missedDays;
 	}
 }
@@ -88,14 +88,16 @@ var tableView = {
 
 	init: function() {
 		this.numSchoolDays = controller.getNumSchoolDays();
-		tableView.render();
+		this.numStudents = controller.getNumStudents();
+		this.render();
+		this.bindCheckBoxes();
 	},
 
 	render: function() {
+		$("thead").html("");
+		$("tbody").html("");
 		this.renderHeaderRow();
-
 		var numStudents = controller.getNumStudents();
-		//this.renderStudentRow(0);
 		for (var i = 0; i < numStudents; i++) {
 			this.renderStudentRow(i);
 		}
@@ -113,47 +115,70 @@ var tableView = {
 	renderStudentRow: function(index) {
 
 		var student = controller.getStudent(index);
-		var missedDays = controller.countMissing(index);
 
-		//render student column
 		var studentRow = document.createElement('tr');
 		studentRow.className += "student";
 
-		//render name column
+		//render row components
+		this.renderStudentNameCol(studentRow, student.name);
+		this.renderCheckBoxCols(studentRow, student.attendance);
+		this.renderMissedDayCol(studentRow, index);
+
+		$('tbody').append(studentRow);
+	},
+
+	renderStudentNameCol: function(studentRow, name) {
 		var studentName = document.createElement('td');
+
 		studentName.className += "name-col";
-		studentName.innerHTML = student.name;
+		studentName.innerHTML = name;
 
 		studentRow.append(studentName);
+	},
 
-		//create checkbox columns
+	renderCheckBoxCols: function(studentRow, attendance) {
 		for (var i = 0; i < this.numSchoolDays; i++) {
 
 			var tdCheckBox = document.createElement('td');
 			tdCheckBox.className += "attend-col";
 
-			//create checkbox for day i
 			var inputCheckBox = document.createElement('input');
 			inputCheckBox.type = "checkbox";
-			
-			//set checkbox for day 1 if attendance is true
-			student.attendance[i] == true && inputCheckBox.prop('checked');
-
-			//bind checkbox click with changing the attendance function
-			inputCheckBox.click(function() {
-				controller.changeAttendance(index, i);
-			});
+			inputCheckBox.checked = attendance[i];
 
 			tdCheckBox.append(inputCheckBox);
 			studentRow.append(tdCheckBox);
 		};
+	},
 
-		var missedDay = document.createElement('td');
-		missedDay.className += "missed-col";
-		missedDay.innerHTML = missedDays;
-		studentRow.append(missedDay);
-		$('tbody').append(studentRow);
-	}
+	renderMissedDayCol: function(studentRow, index) {
+		var missedDayCol = document.createElement('td');
+		var missedDays = controller.countMissing(index);
+
+		missedDayCol.className += "missed-col";
+		missedDayCol.innerHTML = missedDays;
+
+		studentRow.append(missedDayCol);
+	},
+
+	// reRenderMissedDayCol: function(index) {
+
+	// }
+
+	bindCheckBoxes: function() {
+		var tBody = $("tbody");
+		for (var i = 0; i < this.numStudents; i++) {
+			var studentRow = tBody.children().slice(i, i + 1);
+			for (var j = 0; j < this.numSchoolDays; j++) {
+				var checkBoxCol = studentRow.children().slice(j + 1, j + 2);
+				checkBoxCol.click(function(sIndex, aIndex) {
+				return function() {
+						controller.changeAttendance(sIndex, aIndex);
+					}
+				}(i, j + 1));
+			}
+		}
+	},
 }
 
 controller.init();

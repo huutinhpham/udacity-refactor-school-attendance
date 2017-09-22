@@ -7,6 +7,10 @@ In this project I took Udacity's legacy code for an attendance application and r
 
 All functionalities and styles were kept as they were, the only difference is the code inside the app. To test functionalities simply open the HTML files using a desired browser.
 
+## Objective
+
+To learn good design conventions, and the importance of writing good code and how it affect scalability.
+
 ## Languages
 
 * **javaScript**
